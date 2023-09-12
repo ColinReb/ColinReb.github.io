@@ -105,10 +105,10 @@
       filters:[
         {name : devicename}
       ],
-      services: ['battery_service'],
-      optionalServices: ["battery_service"]
-    }
-
+      acceptAllDevices: false,
+      optionalServices: [0x180d, 0x180f]    
+    };
+// SEE https://dev.to/manufac/interacting-with-polar-verity-sense-using-web-bluetooth-553a for event tracking
 
 //------------New options to try
 // Discovery options match any devices advertising:
