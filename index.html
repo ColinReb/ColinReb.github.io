@@ -45,14 +45,16 @@
   <main>
     <div class="row">
 
-      <div class="col-10">
+      <div class="col-8">
         <input class="form-control" id="deviceNameInput" placeholder="Enter device name"  value="CB-Infiniti">
       </div>
 
       <div class="col-2">
         <button type="button" id="controlButton" class="btn btn-primary">HBConnect</button>
       </div>
-  </div>
+      <div class="col-2">
+        <button onclick="post_Data()" type="button" id="gsheets" class="btn btn-primary">GSheets</button>
+      </div>  </div>
 
   <div class="row">
     <div class="col-3 gy-4">
@@ -191,10 +193,24 @@ async function BLEManager() {
 }
 */
 
-
-
-
-   </script> 
+async function post_Data()
+{
+    var URL="https://script.google.com/macros/s/AKfycbxIgM1s4y49a99jk9uW7rwYVd0A7QPg5b5WlU97CEzkbD2jhaB-CYYAbsDRWTXNque-JQ/exec?callback=loadData;
+    var DATA="{"abc":"def"};
+    const response= await fetch(URL, {
+        method: "GET",
+        mode: "cors",
+        body: JSON.stringify(DATA),
+        dataType: "jsonp"
+      }) ;
+} //func
+// log the returned data
+function loadData(e) 
+ {
+    console.log(" inside loadData ");
+    console.log(e);
+  }
    
-  </body>
+   </script> 
+</body>
 </html>
