@@ -197,10 +197,10 @@ async function post_Data()
 {
     var URL="https://script.google.com/macros/s/AKfycbxIgM1s4y49a99jk9uW7rwYVd0A7QPg5b5WlU97CEzkbD2jhaB-CYYAbsDRWTXNque-JQ/exec?callback=loadData";
     var DATA={"abc":"def"};
+    //body: JSON.stringify(DATA),
     const response= await fetch(URL, {
         method: "GET",
         mode: "cors",
-        body: JSON.stringify(DATA),
         dataType: "jsonp"
       }) ;
 } //func
