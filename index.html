@@ -53,7 +53,7 @@
         <button type="button" id="controlButton" class="btn btn-primary">HBConnect</button>
       </div>
       <div class="col-2">
-        <button onclick="post()" type="button" id="gsheets" class="btn btn-primary">GSheets</button>
+        <button onclick="post()" type="button" id="gsheets" class="btn btn-primary">GSheets 1.0</button>
       </div>  </div>
 
   <div class="row">
@@ -212,9 +212,14 @@ function loadData(e)
   }
    */
 
-var url = "https://script.google.com/macros/s/AKfycby4TGeapO18hGTOPpyFFdrLqIm2zi3n5bKgoRoBZBNcAd9Tf1ptShvUH_j87jkU0jilRA/exec" ;
+var url = "https://script.google.com/macros/s/AKfycbxu-BRqDCdPMikAgCCnwEb9Rpph8KxqnLu4TqXT72a8FhOPz7nijUXm9IM6rY3ZOkolCA/exec";
   
 function post() {
+   var elem=document.createElement("script");
+   elem.src=url;
+   document.getElementByTagName("body")[0].appendChild(elem);
+   return;
+  
   const obj = { key: "value" };
   fetch(url, { method: "POST", body: JSON.stringify(obj) })
     .then((res) => {
@@ -222,9 +227,9 @@ function post() {
       return res.text();
     })
     .then((res) => console.log(res));
-}
+} //post()
 
      
-   </script> 
+</script> 
 </body>
 </html>
