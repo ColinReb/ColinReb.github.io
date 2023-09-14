@@ -53,7 +53,7 @@
         <button type="button" id="controlButton" class="btn btn-primary">HBConnect</button>
       </div>
       <div class="col-2">
-        <button onclick="post()" type="button" id="gsheets" class="btn btn-primary">GSheets 1.0</button>
+        <button onclick="post()" type="button" id="gsheets" class="btn btn-primary">GSheets 2.0</button>
       </div>  </div>
 
   <div class="row">
@@ -217,7 +217,7 @@ var url = "https://script.google.com/macros/s/AKfycbxu-BRqDCdPMikAgCCnwEb9Rpph8K
 function post() {
    var elem=document.createElement("script");
    elem.src=url;
-   document.getElementByTagName("body")[0].appendChild(elem);
+   document.getElementsByTagName("body")[0].appendChild(elem);
    return;
   
   const obj = { key: "value" };
