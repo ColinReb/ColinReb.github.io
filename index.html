@@ -212,14 +212,13 @@ function loadData(e)
   }
    */
 
-var url = "https://script.google.com/macros/s/AKfycbwcJAVLpjGpUgDbEldgZ7kkhCef-tMtdgzrDe3-N1PLi-epPFbiitw5h_eLcSB32TkcIQ/exec" ;
-  
+//  reqfunct == "sheetasjson"
+var url = "https://script.google.com/macros/s/AKfycbykmOFXjhVDtHPp0aOoULi498d_4_L-oPpWiTozlt-6H1mNusGcD4rwZvifFVgb7yU95A/exec" ;
 function post() {
    var elem=document.createElement("script");
-   elem.src=url;
+   elem.src=url + "?reqfunct=sheetasjson" ;
    document.getElementsByTagName("body")[0].appendChild(elem);
    return;
-  
   
 } //post()
 
