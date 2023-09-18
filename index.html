@@ -53,7 +53,7 @@
         <button type="button" id="controlButton" class="btn btn-primary">HBConnect</button>
       </div>
       <div class="col-2">
-        <button onclick="post()" type="button" id="gsheets" class="btn btn-primary">CCCSheets</button>
+        <button onclick="post()" type="button" id="gsheets" class="btn btn-primary">157Sheets</button>
       </div>  </div>
 
   <div class="row">
@@ -213,11 +213,11 @@ function loadData(e)
    */
 
 //  reqfunct == "sheetasjson"
-var url = "https://script.google.com/macros/s/AKfycbzsOKzURm1KoMDkl1GT4QrUqaypZaT-1wD_QwTwxmR-1ETzqoVB9eWe8dxGWBcM7V4RMg/exec" ;
+var url ="https://script.google.com/macros/s/AKfycbzJLx2LfdjhBubZr6gPoFE_RD1b_NrxwSoSO_7GV7awmL2_2q4-BoepYlqG80yS6VyH1A/exec" ;
 
 function post() {
    var elem=document.createElement("script");
-   elem.src=url + "?reqfunct=sheetasjsonxxxx" ;
+   elem.src=url + "?reqfunct=sheetasjson&sheetname=Sheet1" ;
    document.getElementsByTagName("body")[0].appendChild(elem);
    return;
   
