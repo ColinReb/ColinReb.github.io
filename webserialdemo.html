@@ -21,7 +21,8 @@
   </head>
   <body  style="background-color:aliceblue;">
  
-<div class="container text-center" >
+<div class="container text-center"  >
+            <br/>
             <h2>A Journey with Web Serial Simulator Demo </h2>
             <h5>Connect your browser directly to a serial device</h5>
 
@@ -34,7 +35,7 @@
     </tr>
     <tr >
         <td style="width:90%;" >
-            A Chrome browser version 89 or higher is required.
+            WebSerial etc.- New in Chrome, version 89 or higher is required.
         </td>
         <td>
             <a href="https://medium.com/r/?url=https%3A%2F%2Fdeveloper.chrome.com%2Fblog%2Fnew-in-chrome-89">link.</a>
@@ -53,7 +54,7 @@
             Article reference 
         </td>
         <td>
-            <a href="https://developer.mozilla.org/en-US/docs/Web/API/Serial#browser_compatibility">link</a> 
+            <a href="">link</a> 
         </td>
     </tr>
 </table>    
@@ -161,7 +162,7 @@
         <div class="col-12">
             <button id="connectbutton" onclick="connectports();" style="cursor:pointer;margin:5px;border-radius:10px;background-color:cornflowerblue;color:white;">Connect  </button>
             <span>&nbsp;&nbsp;&nbsp;Status&nbsp;</span>
-            <span id="connectstatus" style="padding:8px; border-radius:50%;background-color:red ;color:white;">&nbsp;OFF</span>
+            <span id="connectstatus" style="padding:8px; border-radius:50%;background-color:red ;color:white;">OFF</span>
         </div>
     </div>
 
@@ -260,7 +261,7 @@
     <div class="row" style="margin-top:10px;">
        <div class="col-12"  style="color:navy;margin-top:10px;">
         <span>Step 6: &nbsp;&nbsp;</span>
-        <button id="sendbtn" style="background-color:purple;color:white;border-radius:10px;" 
+        <button disabled id="sendbtn" style="background-color:lightgrey;color:white;border-radius:10px;" 
         onclick="sendbrowsercmdA()" >Send command to simulator</button>
         </div>
     </div>
@@ -348,54 +349,61 @@
         }
         async function scanSerialPorts(p)
         {
-            SerialPorts={};
-            SerialPortStatus={};
-            SerialPortReaders={};
-            ReceiveBuffers={};
-            SerialPortReaders_KeepReading={};
-            span_loopcounter.innerText=0;
-            span_matches.innerText=0;
-            span_errors.innerText=0;
-            numports=0;
-            var requestOptions = {
-                filters: [{  }] // QR stack code reader 
-            };
-            requestOptions=null;
-            await navigator.serial.requestPort(requestOptions);
-          
-            let portarr = await navigator.serial.getPorts();
-            if(portarr.length===0)
+            try
             {
-                alert("no COM ports found");return;
-            }
-            numports=portarr.length;
-            console.log(portarr.length);
-            console.log("Ports selected=" + portarr.length);
-            var comport=null;
-            if(p==='1') comport=comport1;
-            else comport=comport2;
-
-            comport.innerHTML="";
+                SerialPorts={};
+                SerialPortStatus={};
+                SerialPortReaders={};
+                ReceiveBuffers={};
+                SerialPortReaders_KeepReading={};
+                span_loopcounter.innerText=0;
+                span_matches.innerText=0;
+                span_errors.innerText=0;
+                numports=0;
+                var requestOptions = {
+                    filters: [{  }] // QR stack code reader 
+                };
+                requestOptions=null;
+                await navigator.serial.requestPort(requestOptions);
             
-            for(var i=0; i < portarr.length; i++)
-            {
-                var portinfo=portarr[i].getInfo();
-                //-----Detail-------
-                console.log(portinfo);
-                //----ends Detail-----
-                const { usbProductId, usbVendorId } = portarr[i].getInfo();
-                console.log("usbVendorId");
-                console.log(usbVendorId);
-                SerialPorts[ usbProductId + "-" + usbVendorId]=portarr[i];
-                console.log("Create option element");
-                var option=document.createElement("OPTION");
+                let portarr = await navigator.serial.getPorts();
+                if(portarr.length===0)
+                {
+                    alert("no COM ports found");return;
+                }
+                numports=portarr.length;
+                console.log(portarr.length);
+                console.log("Ports selected=" + portarr.length);
+                var comport=null;
+                if(p==='1') comport=comport1;
+                else comport=comport2;
+
+                comport.innerHTML="";
                 
-                option.value=usbProductId + "-" + usbVendorId;
-                option.innerText=usbProductId + "-" + usbVendorId;
-                comport.appendChild(option);
+                for(var i=0; i < portarr.length; i++)
+                {
+                    var portinfo=portarr[i].getInfo();
+                    //-----Detail-------
+                    console.log(portinfo);
+                    //----ends Detail-----
+                    const { usbProductId, usbVendorId } = portarr[i].getInfo();
+                    console.log("usbVendorId");
+                    console.log(usbVendorId);
+                    SerialPorts[ usbProductId + "-" + usbVendorId]=portarr[i];
+                    console.log("Create option element");
+                    var option=document.createElement("OPTION");
+                    
+                    option.value=usbProductId + "-" + usbVendorId;
+                    option.innerText=usbProductId + "-" + usbVendorId;
+                    comport.appendChild(option);
 
-            }//for each port
-            
+                }//for each port
+            }
+            catch(e)
+            {
+                //ignore it for now. User may have cancelled.
+                console.log("Ignoring exception for now. User most probably cancelled");
+            }
         }
 
         //https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API
@@ -511,6 +519,8 @@
                     document.querySelector("#connectstatus").style.backgroundColor="green";
                     document.querySelector("#connectstatus").innerText="ON";
                     document.querySelector("#connectbutton").innerText="Close Connection";
+                    document.querySelector("#sendbtn").disabled=false;
+                    document.querySelector("#sendbtn").style.backgroundColor="purple" ;
                 }
             }
             catch(e)
@@ -582,12 +592,20 @@
                 document.querySelector("#connectstatus").style.backgroundColor="red";
                 document.querySelector("#connectstatus").innerText="OFF";
                 document.querySelector("#connectbutton").innerText="Connect";
+                document.querySelector("#sendbtn").disabled=true;
+                document.querySelector("#sendbtn").style.backgroundColor="lightgrey" ;
             }
 
         } //open serial
 
-        async function sendbrowsercmdA()
+        function sendbrowsercmdA()
         {
+            if(document.querySelector("#connectstatus").innerText==="OFF")
+            {
+                alert("You need to first Connect.");
+                return;
+            }
+
             span_loopcounter.innerText=0;
             span_matches.innerText=0;
             span_errors.innerText=0;
