@@ -24,7 +24,7 @@
  
 <div class="container text-center"  >
             <br/>
-            <h2>A Journey with Web Serial Simulator Demo v1.0 </h2>
+            <h2>A Journey with Web Serial Simulator Demo v 1.0</h2>
             <h5>Connect your browser directly to a serial device</h5>
 
 <table border="1"  style="width:65%;background-color:aliceblue;margin-top:20px;"  >
@@ -42,7 +42,7 @@
             <a href="https://medium.com/r/?url=https%3A%2F%2Fdeveloper.chrome.com%2Fblog%2Fnew-in-chrome-89">link.</a>
         </td>
     </tr>
-    <tr >
+    <tr ">
         <td style="width:90%;">
             Chrome on Android is not currently supported 
         </td>
@@ -170,7 +170,7 @@
 </div>
 
 <hr/>
-<div align="center">
+<div align="center" >
    
     <table border="1"  style="width:90%;background-color:white;"  >
     <tr style="background-color:lightgray;">
@@ -703,6 +703,10 @@
 
      function data_recd_timer_handler(portid) // this is the receiver port
      {
+        if(document.querySelector("#connectstatus").innerText==="OFF")
+        {
+                return;
+        }
          var uint8array=Uint8Array.from(ReceiveBuffers[portid]);
          ReceiveBuffers[portid]=[] ; // clear the receiver buffer
          var srecddata = new TextDecoder().decode(uint8array);
