@@ -19,76 +19,90 @@
     
  
   </head>
-  <body  onload="closeports()">
-    <div style="padding:10px;">
-        <div class="container text-center" >
-            <h2>A Journey with Web Serial POC demo</h2>
+  <body  style="background-color:aliceblue;">
+ 
+<div class="container text-center" >
+            <h2>A Journey with Web Serial Simulator Demo </h2>
             <h5>Connect your browser directly to a serial device</h5>
-            Article reference here:
-            <div align="left">
-                <h5>Note </h5>
-                A chrome browser version 89 or higher is required.
-                    <a href="https://medium.com/r/?url=https%3A%2F%2Fdeveloper.chrome.com%2Fblog%2Fnew-in-chrome-89">link.</a>
-                <br/>
-                Chrome on Android is not currently supported 
-                   <a href="https://developer.mozilla.org/en-US/docs/Web/API/Serial#browser_compatibility">: link</a> 
-                <br/>
-                
-                
-            </div>
-            
-        </div>
 
-
- </div>
-  
+<table border="1"  style="width:65%;background-color:aliceblue;margin-top:20px;"  >
+ 
+    <tr >
+        <td colspan=2 style="background-color:lightgrey;" >
+            <h5>Note </h5>
+        </td>
+    </tr>
+    <tr >
+        <td style="width:90%;" >
+            A Chrome browser version 89 or higher is required.
+        </td>
+        <td>
+            <a href="https://medium.com/r/?url=https%3A%2F%2Fdeveloper.chrome.com%2Fblog%2Fnew-in-chrome-89">link.</a>
+        </td>
+    </tr>
+    <tr style="background-color: lightcyan;">
+        <td style="width:90%;">
+            Chrome on Android is not currently supported 
+        </td>
+        <td>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/API/Serial#browser_compatibility">link</a> 
+        </td>
+    </tr>
+    <tr >
+        <td style="width:90%;">
+            Article reference 
+        </td>
+        <td>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/API/Serial#browser_compatibility">link</a> 
+        </td>
+    </tr>
+</table>    
+</div>                
+ 
 <hr style="height:1px;background-color:grey;"/>
-<table  style="width:90%;background-color:white;"  >
+<table  style="width:100%;background-color:white;"  >
     <tr>
         <td colspan="3" style="text-align:center;">
-            <img style="width:80%;" src="image2.png"   />
+            <img style="width:100%;" src="image4.png"   />
         </td>
     </tr>
 </table>
+
+
 <div class="container text-left" style="margin-top:10px;">
     <div class="row">
         <div class="col-12" ><b>Simply follow the steps below</b></div>
     </div>
     <div class="row">
-        <div class="col-12" style="color:navy;margin-top:10px;">Step 1 -Ports: Request Permissions for using a serial port on the </div>
+        <div class="col-12" style="color:navy;margin-top:10px;">Step 1: Select a port for each side  </div>
     </div>   
-    <div class="row">
-        <div class="col-5">
-            <select id="comport1" style="height:32px;"></select>
-            <button onclick="scanSerialPorts('1')" style="cursor:pointer;margin:5px;">
-                WebApp Side </button>
-       </div>
-         <div class="col-1">
-           
+    <div class="row" style="padding:10px;background-color:lightgrey;">
+        <div class="col-2" >
+            <select id="comport1" style="height:32px;width:100%;"></select>
         </div>
-        <div class="col-5">
-            <select id="comport2" style="height:32px;"></select>
-            <button  onclick="scanSerialPorts('2')" style="cursor:pointer;margin:5px;">
-                Simulator Side</button>
+         <div class="col-2">
+            <button onclick="scanSerialPorts('1')" style="cursor:pointer;width:100%;border-radius:10px;;background-color:cornflowerblue;color:white;">
+                WebApp </button>
         </div>
+ 
+       <div class="col-2">
+            <select id="comport2" style="height:32px;width:100%;"></select>
+        </div>
+        <div class="col-2">
+            <button  onclick="scanSerialPorts('2')" style="cursor:pointer;width:100%;border-radius:10px;;background-color:cornflowerblue;color:white;">
+                Simulator</button>    
+        </div>
+ 
     </div>
-    
-    <div class="row"  >
-        <div class="col-12" style="color:navy;margin-top:10px;">Step 2: Note: select / set different ports under step 1 and hit connect </div>
-    </div>  
-    <div class="row">
-        <div class="col-12">
-            <button id="connectbutton" onclick="connectports();" style="cursor:pointer;margin:5px;">Connect  </button>
-            <span>&nbsp;&nbsp;&nbsp;Status&nbsp;</span>
-            <span id="connectstatus" style="padding:8px; border-radius:50%;background-color:red ;color:white;">&nbsp;OFF</span>
-        </div>
+    <div class="row" style="padding:10px;background-color:lightgrey;">
+       <b><span style="color:navy">IMP: The WebApp port must be different from the simulator port !</span></b> 
     </div>
-    <!--Parameters  : ref : https://github.com/GoogleChromeLabs/serial-terminal/blob/main/index.html-->
-    <div class="row" style="margin-top:10px;">
-        <div class="col-12" style="color:navy;">Step 3: Select communication parameters </div>
+     <!--Parameters  : ref : https://github.com/GoogleChromeLabs/serial-terminal/blob/main/index.html-->
+     <div class="row" style="margin-top:10px;">
+        <div class="col-12" style="color:navy;">Step 2: Select communication parameters </div>
     </div>  
-    <div class="row">
-        <div class="col-3">
+    <div class="row"  style="padding:10px;background-color:lightgrey;">
+        <div class="col-2">
             <label>Baud Rate</label><br/>
             <select id="baudrate" style="height:32px;width:100%;">
                 <option value="9600" selected >9600</option>
@@ -97,14 +111,14 @@
 
             </select>
        </div>
-         <div class="col-3">
+         <div class="col-2">
             <label>DataBits</label><br/>
             <select id="databits" style="height:32px;width:100%;">
                 <option value="7">7</option>
                 <option value="8" selected>8</option>
             </select>
         </div>
-        <div class="col-3">
+        <div class="col-2">
             <label>Parity</label><br/>
             <select id="parity" style="height:32px;width:100%;">
                 <option value="none" selected>None</option>
@@ -112,15 +126,45 @@
                 <option value="odd">Odd</option>
             </select>      
         </div>
-        <div class="col-3">
+        <div class="col-2">
             <label>Stop Bits</label><br/>
             <select id="stopbits" style="height:32px;width:100%;">
                 <option value="1" selected>1</option>
                 <option value="2">2</option>
             </select>      
         </div>
- 
+        <div class="col-2">
+            <label>Recv.Time</label><br/>
+            <input onblur="checkrecvtime();" id="recvtime" style="width:100%;" value="2500"/>
+        </div>
+    </div> 
+    <div class="row"  style="background-color:lightgrey;">
+        <div class="col-12" style="color:navy;margin-top:10px;">
+            <table  style="width:100%;margin:8px;">
+                <tr style="background-color:#F0F0F0">
+                    <td style="padding:5px;">
+                        <b>Note: &nbsp;&nbsp;</b>
+                    </td>
+                    <td style="padding:5px;">
+                        Recv. Time in ms is the time the software will wait starting from the first byte(s) 
+                        received hoping that the full message comes in. You can increase this wait in case you are receiving 
+                        partial or chopped responses.
+                    </td>
+                </tr>
+            </table>   
+        </div>
+    </div>    
+    <div class="row"  >
+        <div class="col-12" style="color:navy;margin-top:10px;">Step 3: Connect </div>
+    </div>  
+    <div class="row"  style="padding:10px;background-color:lightgrey;">
+        <div class="col-12">
+            <button id="connectbutton" onclick="connectports();" style="cursor:pointer;margin:5px;border-radius:10px;background-color:cornflowerblue;color:white;">Connect  </button>
+            <span>&nbsp;&nbsp;&nbsp;Status&nbsp;</span>
+            <span id="connectstatus" style="padding:8px; border-radius:50%;background-color:red ;color:white;">&nbsp;OFF</span>
+        </div>
     </div>
+
 </div>
 
 <hr/>
@@ -140,37 +184,53 @@
     </tr>
     <tr>
         <td   style="vertical-align:top; padding:6px;width:45%;background-color:aliceblue" >
-        <span style="color:navy;">
+            <span style="color:navy;">
                 Step 4: Enter command to serial simulator </span><br/>
             <input value="TEST COMMAND"  id="send1" style="display:flex;height:32px;width:95%" placeholder="enter command" />
                 <br/>
-                <label>Add an EOL</label>
-                <select id="eol1" style="height:32px;">
-                    <option value="yes" selected>Yes</option>
-                    <option value="no">No</option>
-                </select> <br/>
-                
+                <table>
+                    <tr>
+                        <td>
+                            <label>Add an EOL</label>
+                        </td>
+                        <td>
+                            <select id="eol1" style="height:32px;">
+                                <option value="yes" selected>Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </td>
+                        <td>
+                            <span>&nbsp;&nbsp;Send Continuous:  &nbsp;&nbsp;</span>
+                        </td>
+                        <td>
+                            <select id="looprepeat" style="height:32px;">
+                                <option value="yes" >Yes</option>
+                                <option value="no" selected>No</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
         </td>
         <td  style="text-align:center;padding:6px;background-color:lightgoldenrodyellow;">
             <i style="font-size:40px;" class="fa-solid fa-arrow-right"></i>
         </td> 
         <td style="vertical-align:top; padding:6px;width:45%;background-color:lightcyan;">   
-                <span>Check: after sending simulator received bytes </span>   
+                <span>Check simulator recd. bytes </span>   
              </br>
                 <input id="recd2" style="height:32px;width:100%" disabled />
             </br>
-                <span>as a string</span></br>
+                <span>Check as a string</span></br>
             <input id="recd2s" style="height:32px;width:100%" disabled /> 
          </td>
     </tr> 
    <tr><td colspan=3 style="background-color: lightgray;">&nbsp;&nbsp;</td></tr>
     <tr>
         <td   style="padding:6px;width:45%;vertical-align:top;background-color:aliceblue;" >
-            <span>Check: after sending webapp received bytes  </span>
+            <span>Check WebApp received bytes  </span>
         </br>   
             <input id="recd1" style="height:32px;width:100%" disabled />
         </br>
-        <span>as a string</span></br>
+        <span>Check as a string</span></br>
             <input id="recd1s" style="height:32px;width:100%" disabled /> 
        </td>
         <td  style="text-align:center;padding:6px;background-color:lightgoldenrodyellow;">
@@ -179,7 +239,7 @@
 
         <td   style="vertical-align:top;padding:6px;width:45%;background-color:lightcyan;" >
         <span style="color:navy;margin-top:10px;">
-            Step 5: Enter simulator's response to webapp </span><br/>
+            Step 5: Enter simulator's response to WebApp </span><br/>
             <input  value="TEST RESPONSE"   id="send2" style="display:flex;height:32px;width:95%" placeholder="device response" />
                 <br/>
                 <label>Add an EOL</label>
@@ -200,15 +260,38 @@
     <div class="row" style="margin-top:10px;">
        <div class="col-12"  style="color:navy;margin-top:10px;">
         <span>Step 6: &nbsp;&nbsp;</span>
-            <button id="sendbtn" style="background-color:purple;color:white;" onclick="sendbrowsercmd()" >Send command to simulator</button>
+        <button id="sendbtn" style="background-color:purple;color:white;border-radius:10px;" 
+        onclick="sendbrowsercmdA()" >Send command to simulator</button>
         </div>
     </div>
-    <hr/>
-    <div class="row">
-        <div class="col-12"  style="color:navy;">
-            Step 7: Done...two checks (left matches right) as noted above !</div>
+    <div class="row" style="margin-top:10px;">
+        <div class="col-12"  style="color:navy;margin-top:10px;">
+            <table  >
+                <tr style="background-color:lightgrey;">
+                    <td >
+                        <b>Note: &nbsp;&nbsp;</b>
+                    </td>
+                    <td>
+                        You can send and receive in a continuous loop by setting "Send Continuous"  to yes.<br/>
+                        To stop set the same dropdown to No. Ideal for long running stability checks.
+                    </td>
+                </tr>
+            </table>
+        </div>
+         
     </div>
- 
+    <div class="row" style="margin-top:10px;background-color: azure;">
+        <div class="col-12"  style="color:navy;margin-top:10px;">
+         <span><b>Run Status :</b> &nbsp;&nbsp;</span>
+         <span >&nbsp;&nbsp;No of transmissions :</span>
+         <span id="loopcounter"  style="padding:5px;background-color: yellow;;">0</span>
+         <span >&nbsp;&nbsp;Matches :</span>
+         <span  style="padding:5px;background-color: yellow;;" id="matches">0</span>
+         <span >&nbsp;&nbsp;Errors :</span>
+         <span  style="padding:5px;background-color: yellow;;" id="errors">0</span>
+        </div>
+    </div>    
+
 </div><!-- container-->
 
 
@@ -219,7 +302,7 @@
     <script>
     
         //------------Web Serial Related code------------------
-        var datarecd_timeout=2500;
+        var datarecd_timeout=document.querySelector("#recvtime");
         var SerialPorts={};
         var SerialPortStatus={}; //open or closed
         var SerialPortReaders={};
@@ -227,7 +310,8 @@
         var ReceiveBuffers={};
 
         var HID_Devices={} ;
-       
+        var timeout_busy=false;
+        var waitcounter=0;
         var  comport1 = document.querySelector("#comport1");
         var  comport2 = document.querySelector("#comport2");
         var  send1 = document.querySelector("#send1");
@@ -235,9 +319,33 @@
         var  recd1 = document.querySelector("#recd1");
         var  recd2 = document.querySelector("#recd2");
         var sendbtn=document.querySelector("#sendbtn");
-
+        var looprepeat=document.querySelector("#looprepeat");
         var numports=0;
+        
+        var span_loopcounter=document.querySelector("#loopcounter");
+        var span_matches=document.querySelector("#matches");
+        var span_errors=document.querySelector("#errors");
 
+        function checkrecvtime()
+        {
+            console.log("checking recv time value");
+            try
+            {
+                var timeout=Number(datarecd_timeout.value)
+                if(isNaN(datarecd_timeout.value))
+                {
+                    alert("Error:Data Receive timeout not a number");
+                    datarecd_timeout.value=2500;
+
+                }
+            }
+            catch(e)
+            {
+                alert("Error:Data Receive timeout not a number");
+                datarecd_timeout.value=2500;
+            }
+
+        }
         async function scanSerialPorts(p)
         {
             SerialPorts={};
@@ -245,7 +353,9 @@
             SerialPortReaders={};
             ReceiveBuffers={};
             SerialPortReaders_KeepReading={};
-
+            span_loopcounter.innerText=0;
+            span_matches.innerText=0;
+            span_errors.innerText=0;
             numports=0;
             var requestOptions = {
                 filters: [{  }] // QR stack code reader 
@@ -327,7 +437,15 @@
      
         async function connectports() 
         {
-
+            if(timeout_busy)
+            {
+                alert("Please wait"); return;
+            }
+           if(document.querySelector("#connectstatus").innerText==="ON")
+            {
+                closeports();
+                return;
+            }
             ////Ref: https://developer.chrome.com/en/articles/serial/
             //alert("https://github.com/webusb/arduino/blob/gh-pages/demos/serial.js");
             //See https://wicg.github.io/serial/#example-7
@@ -350,23 +468,17 @@
                 alert("browser side port cannot be the same as the simulator side port");
                 return;
             }
-            
+            // SET COUNTER
+            waitcounter=2;
             openport( comport1.value );
             openport( comport2.value);
+ 
         } 
+
+
         
         async function openport( portid )
         {
-            try
-            {
-                console.log("closing any open ports from previous sessions");
-                closeports();
-            }
-            catch(e)
-            {
-                console.log("error closing ports before reopening");
-
-            }
             console.log("opening port " + portid + " with baudrate");
             if(SerialPortStatus[portid]==="open")
             {
@@ -387,17 +499,26 @@
                     stopbits: Number.parseInt(document.querySelector("#stopbits").value)
                 };
                
+                if(SerialPorts[portid]===null)
+                {
+                    alert("serial port id is null");
+                }
+                
                 await SerialPorts[portid].open(options);
-                document.querySelector("#connectstatus").style.backgroundColor="green";
-                document.querySelector("#connectstatus").innerText="ON";
-                document.querySelector("#connectbutton").innerText="Close Connection";
+                waitcounter--;
+                if(waitcounter ===0)
+                {
+                    document.querySelector("#connectstatus").style.backgroundColor="green";
+                    document.querySelector("#connectstatus").innerText="ON";
+                    document.querySelector("#connectbutton").innerText="Close Connection";
+                }
             }
             catch(e)
             {
                 console.log(e);
                 console.log("error opening com port " + portid);
-                SerialPortStatus[portid]=null; return;
-                alert("Error opening port. Try reloading the app. If that fails close all Chrome browser windows and reopen Chrome. That should work. This happens if you keep your ports open for too long without any activity.");
+                alert("Error opening port. Try reloading the app. If that fails close all Chrome browser windows and reopen Chrome.");
+                return;
             }
             SerialPortStatus[portid]="open";
             SerialPortReaders_KeepReading[portid] = true;
@@ -405,7 +526,6 @@
 
             while (SerialPorts[portid].readable && SerialPortReaders_KeepReading[portid]) 
             {
-                console.log("Entering port readable and keep reading loop for id=" + portid);
                 //get the reader for this port
                 SerialPortReaders[portid] = SerialPorts[portid].readable.getReader();
                 ReceiveBuffers[portid]=[] ;
@@ -418,6 +538,7 @@
                         if (done) 
                         {   // you get here if closeport was called or some error
                             // |reader| has been canceled.
+                            SerialPortReaders_KeepReading[portid]=false;
                             console.log("Done Reader loop closed for ID=" + portid);
                             break;
                         }
@@ -427,16 +548,16 @@
                             console.log(value); // this is a Uint8Array object
                             if(ReceiveBuffers[portid].length===0)
                             { // first byte(s) received. set up a timer to wait for all
-                                setTimeout(data_recd_timer_handler, datarecd_timeout, portid);
+                                setTimeout(data_recd_timer_handler, datarecd_timeout.value, portid);
                             }
                             value.forEach(element => {
                                  ReceiveBuffers[portid].push(element);
                                });
                             console.log("Receive buffer size=" + ReceiveBuffers[portid].length);
-                            
 
                         }
                     } //innerwhile
+
                 } catch (error) {
                     alert(error);
                     console.log("error");
@@ -445,60 +566,46 @@
                     SerialPortReaders[portid].releaseLock();
                     console.log("releasing reader lock for id=" + portid);
                 }
+
             } //while
-            console.log("Closing port ID=" + portid);
+         
             await SerialPorts[portid].close();
-            console.log("Port closed for id=" + portid);
-            await SerialPorts[portid].forget();
-            console.log("Port forgotten for id=" + portid);
-            SerialPorts[portid]=null;
+           
+            //SerialPorts[portid]=null;
             SerialPortStatus[portid]=null;
-            SerialPortReaders[portid]=null;
-            ReceiveBuffers=[portid]=null;
+            //SerialPortReaders[portid]=null;
+            ReceiveBuffers[portid]=null;
             SerialPortReaders_KeepReading[portid]=false;
+            waitcounter--;
+            if(waitcounter===0)
+            {
+                document.querySelector("#connectstatus").style.backgroundColor="red";
+                document.querySelector("#connectstatus").innerText="OFF";
+                document.querySelector("#connectbutton").innerText="Connect";
+            }
+
         } //open serial
 
+        async function sendbrowsercmdA()
+        {
+            span_loopcounter.innerText=0;
+            span_matches.innerText=0;
+            span_errors.innerText=0;
+            sendbrowsercmd();
+        }
         async function sendbrowsercmd()
         {
- 
-            if(comport1.value === null || comport1.value.trim().length===0)
-            {
-                alert(" browser side port not selected");
-                return;
-            }
-            if(comport2.value === null || comport2.value.trim().length===0)
-            {
-                alert(" simulator side port not selected");
-                return;
-            }
 
-            if(comport1.value===comport2.value)
+            if(document.querySelector("#connectstatus").innerText==="OFF")
             {
-                alert("browser side port cannot be the same as the simulator side port");
+                alert("You need to first Connect.");
                 return;
-            }
-
-            if(SerialPorts[comport1.value]===null || SerialPorts[comport1.value]===undefined || 
-               SerialPorts[comport2.value]===null || SerialPorts[comport2.value]===undefined
-            )
-            {
-                alert("ports not connected"); return;
-            }
-            if(SerialPortStatus[comport1.value]===undefined || SerialPortStatus[comport1.value]===null ||
-                SerialPortStatus[comport1.value] !=="open")
-            {
-                alert("browser side port not open"); return;
-            }
-            if(SerialPortStatus[comport2.value]===undefined || SerialPortStatus[comport2.value]===null ||
-                SerialPortStatus[comport2.value] !=="open")
-            {
-                alert("simulator side port not open"); return;
             }
             if(send1.value.trim().length===0)
             {
                 alert("no send command specified "); return;
             }
- 
+
             console.log("sending command to port " + comport1.value);
             recd1.value="";
             recd1s.value="";
@@ -517,13 +624,17 @@
       
         async function closeports()
         {
-            if(comport1.getElementsByTagName("option").length < 2 || comport2.getElementsByTagName("option").length < 2)
+            if(document.querySelector("#connectstatus").innerText==="OFF")
             {
-                console.log("insufficient ports for this demo");return;
+                alert("Ports already closed");
+                return;
             }
+            waitcounter=2;
             closeport(comport1.value);
             closeport(comport2.value);
+ 
         }
+
         async function closeport(portid)
         {
             console.log("closing port " + portid);
@@ -531,7 +642,7 @@
             {    
                 try
                 {
-                    SerialPortReaders[comport1.value].cancel();
+                    SerialPortReaders[portid].cancel();
                     //Note: This will break the read loop in function openport() with done =true..see there
                     // the inner while(true) will be broken out and in the finally clause we do whatever clean up
                     // do whatever clean up here 
@@ -585,7 +696,27 @@
             recd1s.value=string_from_bytes(srecddata);
             sendbtn.disabled=false;
             sendbtn.style.backgroundColor='purple';
-         }
+            //loop test
+            span_loopcounter.innerText=Number(span_loopcounter.innerText) + 1;
+            var checkvalue=send2.value;
+            if(eol2.value==="yes") checkvalue +="\r\n";
+            
+            if(checkvalue===( eol2.value==="yes"? send2.value + "\r\n": send2.value))
+            {
+                span_matches.innerText=Number(span_matches.innerText) + 1;
+            }
+            else
+            {
+                
+                span_errors.innerText=Number(span_errors.innerText) + 1;
+            }
+
+            
+            if(looprepeat.value==="yes")
+            {
+                setTimeout(sendbrowsercmd, 1000);
+            }
+        }
          else //comport2
          {
             //recd by the simulator
@@ -608,7 +739,7 @@
 
     function string_from_bytes(s)
     {
-        var array = s.split(",");
+       var array = s.split(",");
         var retval="";
         array.forEach(function (s_asc) {
             retval +=  String.fromCharCode(Number(s_asc));
