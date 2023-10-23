@@ -458,10 +458,7 @@
             ////Ref: https://developer.chrome.com/en/articles/serial/
             //alert("https://github.com/webusb/arduino/blob/gh-pages/demos/serial.js");
             //See https://wicg.github.io/serial/#example-7
-            if(comport1.getElementsByTagName("option").length < 2 || comport2.getElementsByTagName("option").length < 2)
-            {
-                alert("Two ports must be set before connecting."); return;
-            }
+            
             if(comport1.value === null || comport1.value.trim().length===0)
             {
                 alert(" browser side port not selected");
