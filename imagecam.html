@@ -1,0 +1,317 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+ 
+    </head>
+<body style="margin:0px;padding:0px">
+  
+  <canvas id="my-canvas" width="640" height="480"></canvas>
+  
+  <canvas style="display:none;" id="c1" width="640" height="480"></canvas>
+  <canvas style="display:none;"  id="c2" width="640" height="480"></canvas>
+
+  <div id="buttondiv1" style="z-index:400;position:absolute; top:10px;right:-64px;">
+           <button onclick="showhidebuttons()"  style="padding:10px;background-color:purple;color:white;border-radius:50%"><big>Menu</big></button>
+           <button onclick="window.location.href='pencilpics.html' "  style="padding:10px;background-color:purple;color:white;border-radius:50%"><big>Main</big></button>
+   
+</div>
+  <div id="buttondiv" style="width:95%;border:5px;border-style:solid;border-color:mediumpurple;background-color:lightgray;padding:5px;z-index:400;position:absolute; top:0px;left:0px;">
+    <table style="width:99%;;">
+        <tr>
+            <td >
+               <span><small>Light<->Dark</small></span>
+                <input  onchange="generate_sketch()" style="width:100%;" type="range" id="blurval"  min="0" max="50">
+            </td>
+            <td>
+                <span><small>Color<->Gray</small></span>
+                <input  onchange="generate_sketch()"  style="width:100%" type="range"  id="greyval" min="0" max="100">
+            </td>
+          </tr>
+    </table>
+    <hr/>
+    <table style="width:99%;;">
+          <tr>
+            <td align="center" >
+            <label onclick="startcam()" style="padding:5px;background-color:purple;color:white;border-radius:10px;"><small>CAMERA</small></label>
+            </td>
+            <td align="center">
+            <label for="imgfile" class="custom-file-upload" style="padding:5px;background-color:purple;color:white;border-radius:10px;">
+                <small>PHOTO</small>
+                <input style="display:none" type='file' id='imgfile' onchange="loadImage()"/>
+            </label>
+            </td>
+            <td align="center">
+            <label onclick="share()" style="padding:5px;background-color:purple;color:white;border-radius:10px;"><small>SHARE</small></label>
+            </td>
+            <td style="width:50%">
+                <span><small>Normal<->Upside-Down</small></span>
+                <input value="0"  onchange="generate_sketch()"  style="width:100%" type="range"  id="updown" min="0" max="100">
+            </td>
+        </tr>
+   </table>
+ </div>   
+
+   <div  id="initialmessage"  style="border-radius:10px;border:solid;border-width:10px; border-color:green; top:120px;left:30px;position:fixed; width:70%;background-color:azure; font-size:18px;padding:10px">
+       If the image is not centered slide screen left right.
+       <br/><br/>
+       Click Menu to toggle the menu.
+       <br/><br/>
+       Click Camera or Photo below to  start <br/>
+   </div>
+
+  <script>
+   var mode="";
+   var currphotoimg=null;
+
+   function showhidebuttons()
+   {
+       if(btndiv.style.display==="none")btndiv.style.display="";
+       else btndiv.style.display="none";
+   }
+   function share()
+   {
+        var image = new Image();
+        var dataURL = canvas.toDataURL("image/jpeg", 1.0);
+        image.onload = () => {
+            var a = document.createElement('a');
+            a.href = dataURL;
+            a.download = "myimage.jpeg";
+            document.body.appendChild(a);
+            a.click();
+        }
+        image.crossOrigin = "Anonymous";
+        image.src =  dataURL ;  //"wheatfields.png";  //'brothers.png';
+ 
+   }
+   function loadImage() {
+        var input, file, fr, img;
+        document.getElementById('initialmessage').style.display="none";
+        mode="photo";
+        if (typeof window.FileReader !== 'function') {
+            alert("The file API isn't supported on this browser yet.");
+            return;
+        }
+
+        input = document.getElementById('imgfile');
+        if (!input) {
+            alert("Cannot not find the imgfile element.");
+        }
+        else if (!input.files) {
+            alert("This browser doesn't seem to support the `files` property of file inputs.");
+        }
+        else if (!input.files[0]) {
+            alert("Please select a file before clicking 'Load'");
+        }
+        else 
+        {
+            file = input.files[0];
+            fr = new FileReader();
+            fr.onload = function()
+            {
+                img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.onload = function()
+                {
+                    img=resize(img);// canvas or image
+                    currphotoimg=img;
+                    generate_sketch();//uses currphoto
+
+               };
+                img.src = fr.result;
+            }
+
+            fr.readAsDataURL(file);
+        }
+    }
+
+    function generate_sketch()
+    {
+        if(mode==="cam") return;
+        if(currphotoimg===null)return;
+        var img=currphotoimg ;
+        canvas.width=img.width;
+        canvas.height=img.height;
+                    
+        canvas.style.width = img.width + "px";
+        canvas.style.height= img.height + "px";
+        //ctx.drawImage(img, 0, 0,canvas.width,canvas.height);
+        //return;
+        c1.width=img.width;
+        c1.height=img.height;
+        c1.style.width = img.width + "px";
+        c1.style.height= img.height + "px";
+        c2.width=img.width;
+        c2.height=img.height;
+        c2.style.width = img.width + "px";
+        c2.style.height= img.height + "px";
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx1.clearRect(0, 0, c1.width, c1.height);
+        ctx2.clearRect(0, 0, c2.width, c2.height);
+        var blurelem=document.getElementById("blurval");
+        var greyelem=document.getElementById("greyval") ;
+        var greyval=greyelem.value /100;
+        var blurparam="blur("  +  blurelem.value + "px )";
+        ctx1.filter = "grayscale("+ greyval +  ")";
+        ctx1.drawImage(img, 0, 0,img.width,img.height)
+        ctx2.filter="grayscale("+ greyval  +  ") invert(1) " + blurparam;
+        ctx2.drawImage(img, 0, 0,img.width,img.height);
+        ctx1.globalCompositeOperation = 'color-dodge';
+        ctx1.drawImage(c2, 0, 0, c1.width, c1.height);
+        ctx.drawImage(c1, 0, 0,img.width,img.height);
+
+    }
+    var firsttime=true;
+    function startcam()
+    {
+        if(!firsttime)
+        {
+            document.getElementById('initialmessage').style.display="none";
+        }
+        firsttime=false;
+        console.log("start cam called");
+        mode="cam";
+        var size=window.innerWidth;
+        if(window.innerHeight > size) size=window.innerHeight ;
+        canvas.width=size;
+        canvas.height=size;
+        canvas.style.width = size + "px";
+        canvas.style.height= size + "px";
+
+        c1.width=size;
+        c1.height=size;
+        c1.style.width = size + "px";
+        c1.style.height= size + "px";
+        c2.width=size;
+        c2.height=size;
+        c2.style.width = size + "px";
+        c2.style.height= size + "px";
+
+        playCamera(canvas, canvas.width, canvas.height);
+
+    }// startcam()
+
+    function playStream(canvas, stream) {
+        var video = document.createElement('video');
+        video.addEventListener('loadedmetadata', function() {
+            //-----Upside down image---
+            
+            var blurelem=document.getElementById("blurval");
+            var greyelem=document.getElementById("greyval") ;
+            var updownelem=document.getElementById("updown") ;
+            var updownval=updownelem.value/100;// 0 to 1
+         
+            var drawFrame = function() {
+                if(mode !=="cam") return;
+                var greyval=greyelem.value /100;
+                var blurparam="blur("  +  blurelem.value + "px )";
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.reset(); // Clear the context!
+                ctx1.clearRect(0, 0, c1.width, c1.height);
+                ctx2.clearRect(0, 0, c2.width, c2.height);
+                updownval=updownelem.value/100;
+                ctx.translate(0, canvas.height * updownval);//at 0 we want 0 and at 1 we want canvas height
+                ctx.scale(1, 1 - (2 * updownval)) ;// at 0 we want 1 and at 1 we want -1
+
+                ctx1.filter = "grayscale("+ greyval +  ")";
+                ctx1.drawImage(video, 0, 0)
+                ctx2.filter="grayscale("+ greyval  +  ") invert(1) " + blurparam;
+                ctx2.drawImage(video, 0, 0);
+                ctx1.globalCompositeOperation = 'color-dodge';
+                ctx1.drawImage(c2, 0, 0, c1.width, c1.height);
+                ctx.drawImage(c1, 0, 0);
+                 window.requestAnimationFrame(drawFrame);
+            
+            };
+            drawFrame();
+        });
+        video.autoplay = true;
+        video.srcObject = stream;
+    }
+    
+    function playCamera(canvas, preferedWidth, preferedHeight) {
+        var devices = navigator.mediaDevices;
+        if (devices && 'getUserMedia' in devices) {
+            var constraints = {
+                video: {
+                    width: preferedWidth,
+                    height: preferedHeight
+                }
+                // you can use microphone adding `audio: true` property here
+            };
+            var promise = devices.getUserMedia(constraints);
+            promise
+                .then(function(stream) {
+                    playStream(canvas, stream);
+                })
+                .catch(function(error) {
+                    console.error(error.name + ': ' + error.message);
+                });
+        } else {
+            console.error('Camera API is not supported.');
+        }
+    }
+    
+    
+    // Usage example:
+    var btndiv1=document.getElementById('buttondiv1');
+    var btndiv=document.getElementById('buttondiv');
+    var params=btndiv.getBoundingClientRect();
+    console.log(params);
+    btndiv.style.top=((window.innerHeight) - params.height -15) + "px";
+    btndiv.style.position="fixed";
+
+    var params1=btndiv1.getBoundingClientRect();
+    btndiv1.style.left=((window.innerWidth) - params1.width - 25) + "px";
+    btndiv1.style.position="fixed";
+
+
+    var canvas = document.querySelector('#my-canvas');
+    var ctx = canvas.getContext('2d');
+    // ctx.fillStyle = "red";
+    //ctx.fillRect(0, 0, canvas.width, canvas.height);
+    var c1 = document.querySelector('#c1');
+    var c2 = document.querySelector('#c2');
+    var ctx1 = c1.getContext('2d');
+    var ctx2 = c2.getContext('2d');
+    startcam();
+   
+    function resize(canvas)  //canvas or image
+    {
+        // VP os viewport
+        var VPwidth=parseInt(window.innerWidth );
+        var VPheight=parseInt(window.innerHeight);
+        console.log("window w=" + VPwidth + ", h=" + VPheight);
+        var scale=1.0;
+        var Iwidth=canvas.width;//  I for image
+        var Iheight=canvas.height;
+        if (Iheight === 0) {return};
+        var Iaspect = Iwidth/Iheight;
+        var IaspectRounded = (Math.round(Iaspect * 100)) / 100;
+        var widthRatio = VPwidth / Iwidth;
+		var heightRatio = VPheight / Iheight;
+        // default to the width ratio until proven wrong
+        var scale = widthRatio;
+        if (widthRatio * Iheight > VPheight) 
+        {
+			scale = heightRatio;
+        };
+        console.info("computed scale " + scale);
+        //  fit the content into the window
+        var hsize  = Math.round(Iwidth * scale);
+		var vsize = Math.round(Iheight * scale);
+        console.log("new computed width=" + hsize + ", height=" + vsize);
+        // finally set the scaled image width and height attributes
+        //img.setAttribute("width", hsize);
+		//img.setAttribute("height", vsize);
+        canvas.width=hsize;
+        canvas.height=vsize;
+        canvas.style.width=hsize + "px";
+        canvas.style.height=vsize + "px";
+        return canvas;
+    }//resizeimage
+  </script>
+</body>
+</html>
