@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Tunnel animation fun for the kids" />
+<meta name="keywords" content="webgl, effect, tube, infinite, interactive, threejs, background, canvas" />
+<meta name="author" content="" />
+<meta property="og:title" content="SOC Christmas Party 2023" />
+<meta property="og:url" content="https://www.colinrebello.com/" />
+<meta property="og:description" content="A wish that comes your way." />
+<meta property="og:image" content="https://colinreb.github.io/Christmas2023/ogpic.png" />
+<style>
+ .box {
+	animation: rotateY-anim 20s linear infinite;
+	width: 50px;
+	height: 50px;
+	background: #0091EA;
+	margin: 20px;
+}
+
+@keyframes rotateY-anim {
+	0% {
+		transform: rotateY(0deg);
+                
+	}
+
+	100% {
+		transform: rotateY(360deg);
+                
+	}
+}
+
+#camera--trigger, #button1, #button2, #button3{
+    
+    color: white;
+    font-size: 14px;
+    border-radius: 30px;
+    border: none;
+    padding: 10px 10px;
+    text-align: center;
+    box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
+    position: fixed;
+    bottom: 25px;
+    width:20%;
+}
+
+
+#button1{
+    background-color: cornflowerblue;
+   left: 10%; 
+}
+#camera--trigger{
+    background-color: red;
+   left: 40%; 
+}
+#button2{
+    background-color: cornflowerblue;
+   left: 70%; 
+}
+
+</style>
+<style>
+      #mainimg {
+        top: 50%;
+        left: 50%;
+        width: 80vw;
+        height: 70vh;
+        transform: translate(-50%, -50%);
+        
+        position: absolute;
+      }
+    </style>                  
+</head>
+<body >
+
+
+<div class="content">
+<!--<video id="camera--view" autoplay playsinline style="position:absolute;top:20px;left:20px;width:20%;height:20%;"></video>-->
+ <canvas id="camera--sensor" style="display:none;position:absolute;width:50%;height:70%;left:50%;"></canvas>
+<!-- Camera trigger -->
+<button style="display:none;" id="camera--trigger" onclick="start_camera();">&nbsp;Start&nbsp;</button>
+<button style="display:none;"  id="button1" onclick="flipv();">UpDown</button>
+<button style="display:none;"  id="button2" onclick="rotate();">Rotate</button> 
+ 
+<img src="//:0" alt="" id="snapshot" style="display:none;position:absolute;top:0;left:0;width:20%;height:20%;">
+<!-- The canvas where ThreeJs renders the WebGL -->
+<canvas id="scene" style="width:100%;height:100%;"></canvas>
+</div>
+<div id="header" style="display:none;width:100%;border-radius:15px;font-size:14px;padding:8px;background-color:cornsilk;color:white;text-align:center;position:absolute;bottom:5px;z-index:200;">
+    <font color="red"><b>start:</b>&nbsp;</font>
+    <button style="color:white;background-color:navy;border-radius:50%;font-size:12pt;;padding:15px;" onclick="changetunnel(1);">Sunflower</button>
+    <button style="color:white;background-color:navy;border-radius:50%;font-size:12pt;padding:15px;" onclick="changetunnel(4);">Cam</button>
+    <button style="color:white;background-color:navy;border-radius:50%;font-size:12pt;;padding:15px;" onclick="changetunnel(2);">Sky</button>
+    <button style="color:white;background-color:navy;border-radius:50%;font-size:12pt;;padding:15px;" onclick="changetunnel(3);">Rose</button>
+    <br/>
+    <font color="red"><b>Tap screen to change direction :)</b></font>
+    <button style="display:none;" onclick="startanimation(this);">START</button>
+ </div>
+    
+    <div id="mainimg" >
+        <img class="box" id="mainimg1" src="DAParty.jpeg" style="display:none;border-radius:50%;width:85%;height:75%" />
+         <img id="mainimg2"   src="santa.gif" style="position:absolute;top:60%;display:none;border-radius:50%;width:35%;height:35%" />
+        <br/>
+            <h2 style="display:none;"  id="caption">SANTA SAYS CLICK THE ARROW TO START</h2>
+        <audio style="display:none" id="myaudio" controls src="nbv-bv.mp3" loop ></audio> 
+
+        <a style="display:none;"    id="caption1" onclick="this.firstChild.play();startcard();"><audio src="nbv-bv.mp3" loop></audio><h1><font color=red>SANTA SAYS</font>
+                <br/><font color=green>CLICK HERE TO START</font></h1></a>
+         <br/>
+         <div align="center" id="startdiv">
+             <span id="s0"><h1>SOC presents</h1></span>
+             <br/>
+           <font color="red"> <h2>A Christmas Party 2023</h2></font>
+             <button id="startbtn" style="padding:10px; border-radius:10px;;background-color:purple;color:white;width:30%;font-size:20px;" 
+                     onclick="startcard();"> START </button>
+           <span id="s1" style="color:purple;display:none;font-size:16px"><i>Have fun, St. Peter's SOC team.🎄⛄</i> </span>
+           
+         </div>
+    </div>   
+<script src="three.min.js"></script>
+<script src="NoSleep.js"></script>
+<script >
+  // Set constraints for the video stream
+//var constraints = { video: { facingMode: "user" }, audio: false };
+var mainimg=document.querySelector("#mainimg");
+var mainimg1=document.querySelector("#mainimg1");
+var caption=document.querySelector("#caption");
+var caption1=document.querySelector("#caption1");
+var startdiv=document.querySelector("#startbtn");
+var track = null;
+var firsttime=true;
+var flag=0;
+var loaded=0;
+var camerastarted=0;
+
+var noSleep = new NoSleep();
+var player=document.querySelector("#myaudio");
+
+const animated = document.querySelector(".box");
+
+animated.onanimationend = () => {
+  console.log("Animation ended");
+};
+
+
+function startcard()
+{
+      console.log("it's go time");
+      startdiv.style.display="none";
+      noSleep.enable();
+      changetunnel(1);
+      
+      setTimeout(() => {
+          console.log("Delayed for 5 second.");
+          player.style.display="none";
+          caption.style.display="none";
+          caption1.style.display="none";
+          document.querySelector("#s1").style.display="block";
+          document.querySelector("#s0").style.display="none";
+          mainimg1.style.display="block";
+          mainimg2.style.display="block";
+          document.querySelector('#myaudio').play(); 
+           
+       }, "3500");
+      
+}
+player.addEventListener("play", function () {
+      console.log("it's go time");
+      player.style.display="none";
+      caption.style.display="none";
+      mainimg1.style.display="block";
+      noSleep.enable();
+      changetunnel(1);
+  });
+// Define constants
+//var video = document.querySelector("#camera--view");
+var canvas = document.querySelector("#camera--sensor");
+var context=canvas.getContext("2d");
+var snapshot=document.querySelector("#snapshot");
+
+var angle1=0;
+// Access the device camera and stream to video
+function start_camera() {
+     navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then(function(stream) {
+            track = stream.getTracks()[0];
+            video.srcObject = stream;
+            renderFrame();
+            flag=0;
+             // track.stop();
+         })
+        .catch(function(error) {
+            console.error("Oops. Something is broken.", error);
+        });
+}
+
+function flipv()
+{
+   flag===0?flag=1:flag=0;
+   console.log('flip vertical');
+}
+
+function rotate()
+{
+   flag=2;
+ 
+   console.log('rotate');
+}
+
+var firsttime=true;
+function renderFrame() {
+  // re-register callback
+  requestAnimationFrame(renderFrame);
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  //console.log("render frame");
+ 
+  //context.translate(300,0);
+  //context.rotate( angleInRad );
+  
+  //context.rotate( -angleInRad );
+  //context.translate(-300,0);
+  if(flag===0)
+  {
+     context.drawImage(video, 0, 0); 
+  }
+  else if(flag===1)// Flip vertically
+  {
+  // Multiply the y value by -1 to flip vertically
+     context.scale(1, -1);
+    // Start at (0, -height), which is now the bottom-left corner
+     context.drawImage(video, 0, -video.videoHeight);
+     context.scale(-1,1);
+  }
+  else if(flag===2)
+  {
+     // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
+     context.translate(canvas.width/2,canvas.height/2); // translate to rectangle center 
+                          // x = x + 0.5 * width
+                          // y = y + 0.5 * height
+     context.rotate((Math.PI / 180) * angle1); // rotate
+     angle1+=.5;
+     context.translate(-canvas.width/2,-canvas.height/2); // translate back
+     context.drawImage(video, 0, 0);
+   }
+  
+  return;
+   // Examples
+    drawImage(img, 100, 100); // just draw it 
+    drawImage(img, 100, 100, 200, 50); // draw it with width/height specified
+    drawImage(img, 100, 100, 200, 50, 45); // draw it at 45 degrees
+    drawImage(img, 100, 100, 200, 50, 0, true); // draw it flipped
+    drawImage(img, 100, 100, 200, 50, 0, false, true); // draw it flopped
+    drawImage(img, 100, 100, 200, 50, 0, true, true); // draw it flipflopped
+    drawImage(img, 100, 100, 200, 50, 45, true, true, true); // draw it flipflopped and 45 degrees rotated around the center of the image :-)
+
+   
+ }//renderframe
+
+function camera_tunnel()
+{
+    snapshot.src=canvas.toDataURL("image/webp");
+    textures.t4.url= snapshot.src;
+    currtunnel=3 ;
+    changetunnel();
+}
+
+//--------------WebGL-------------
+  // Get window dimension
+var ww = document.documentElement.clientWidth || document.body.clientWidth;
+var wh = window.innerHeight;
+
+// Save half window dimension
+var ww2 = ww * 0.5, wh2 = wh * 0.5;
+
+// Constructor function
+function Tunnel() {
+  // Init the scene and the
+  this.init();
+  // Create the shape of the tunnel
+  this.createMesh();
+
+  // Mouse events & window resize
+  this.handleEvents();
+
+  // Start loop animation
+  window.requestAnimationFrame(this.render.bind(this));
+}
+
+Tunnel.prototype.init = function() {
+  // Define the speed of the tunnel
+  this.speed = 0.002;
+
+  // Store the position of the mouse
+  // Default is center of the screen
+  this.mouse = {
+    position: new THREE.Vector2(0, 0),
+    target: new THREE.Vector2(0, 0)
+  };
+
+  // Create a WebGL renderer
+  this.renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    canvas: document.querySelector("#scene")
+  });
+  // Set size of the renderer and its background color
+  this.renderer.setSize(ww, wh);
+  this.renderer.setClearColor(0x222222);
+
+  // Create a camera and move it along Z axis
+  this.camera = new THREE.PerspectiveCamera(100, ww / wh, 0.01, 1000);//Note original was 15 made to 100
+  this.camera.position.z = 0.35;
+
+  // Create an empty scene and define a fog for it
+  this.scene = new THREE.Scene();
+  this.scene.fog = new THREE.Fog(0x222222, 0.6, 2.8);
+};
+
+Tunnel.prototype.createMesh = function() {
+  // Empty array to store the points along the path
+  var points = [];
+
+  // Define points along Z axis to create a curve
+  for (var i = 0; i < 5; i += 1) {
+    points.push(new THREE.Vector3(0, 0, 2.5 * (i / 4)));
+  }
+  // Set custom Y position for the last point
+  points[4].y = -0.06;
+
+  // Create a curve based on the points
+  this.curve = new THREE.CatmullRomCurve3(points);
+  // Define the curve type
+
+  // Empty geometry
+  var geometry = new THREE.Geometry();
+  // Create vertices based on the curve
+  geometry.vertices = this.curve.getPoints(70);
+  // Create a line from the points with a basic line material
+  this.splineMesh = new THREE.Line(geometry, new THREE.LineBasicMaterial());
+
+  // Create a material for the tunnel with a custom texture
+  // Set side to BackSide since the camera is inside the tunnel
+  this.tubeMaterial = new THREE.MeshStandardMaterial({
+    side: THREE.BackSide,
+    map: textures.stone.texture,
+    bumpMap: textures.stoneBump.texture,
+    bumpScale: 0.0003
+  });
+  
+    // Add two lights in the scene
+    // An hemisphere light, to add different light from sky and ground
+    var light = new THREE.HemisphereLight( 0xffffbb, 0x887979, 0.9);
+  this.scene.add( light );
+  //------cmr-----
+  var light = new THREE.DirectionalLight( 0xffffff, 1, 100 );
+  light.position.set( 1,0, 0 ); 			//default; light shining from top
+  this.scene.add( light );
+  var light = new THREE.DirectionalLight( 0xffffff, 1, 100 );
+  light.position.set(-1,0,0 ); 			//default; light shining from top
+  this.scene.add( light );
+
+  var light = new THREE.DirectionalLight( 0xffffff, 1, 100 );
+  light.position.set( 0,-1,0); 			//default; light shining from top
+  this.scene.add( light );
+  //--------------
+    // Add a directional light for the bump
+    var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.8 );
+  this.scene.add( directionalLight );
+    // Repeat the pattern
+    this.tubeMaterial.map.wrapS = THREE.RepeatWrapping;
+    this.tubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    this.tubeMaterial.map.repeat.set(30, 6);
+    this.tubeMaterial.bumpMap.wrapS = THREE.RepeatWrapping;
+    this.tubeMaterial.bumpMap.wrapT = THREE.RepeatWrapping;
+    this.tubeMaterial.bumpMap.repeat.set(30, 6);
+
+  // Create a tube geometry based on the curve
+  this.tubeGeometry = new THREE.TubeGeometry(this.curve, 70, 0.02, 50, false);
+  // Create a mesh based on the tube geometry and its material
+  this.tubeMesh = new THREE.Mesh(this.tubeGeometry, this.tubeMaterial);
+  // Push the tube into the scene
+  this.scene.add(this.tubeMesh);
+
+  // Clone the original tube geometry
+  // Because we will modify the visible one but we need to keep track of the original position of the vertices
+  this.tubeGeometry_o = this.tubeGeometry.clone();
+};
+
+Tunnel.prototype.handleEvents = function() {
+  // When user resize window
+  window.addEventListener("resize", this.onResize.bind(this), false);
+  // When user move the mouse
+  document.body.addEventListener(
+    "mousemove",
+    this.onMouseMove.bind(this),
+    false
+  );
+};
+
+Tunnel.prototype.onResize = function() {
+  // On resize, get new width & height of window
+  ww = document.documentElement.clientWidth || document.body.clientWidth;
+  wh = window.innerHeight;
+  ww2 = ww * 0.5;
+  wh2 = wh * 0.5;
+
+  // Update camera aspect
+  this.camera.aspect = ww / wh;
+  // Reset aspect of the camera
+  this.camera.updateProjectionMatrix();
+  // Update size of the canvas
+  this.renderer.setSize(ww, wh);
+};
+
+Tunnel.prototype.onMouseMove = function(e) {
+  // Save mouse X & Y position
+  //this.mouse.target.x = (e.clientX - ww2) / ww2;
+  //this.mouse.target.y = (wh2 - e.clientY) / wh2;
+};
+
+Tunnel.prototype.updateCameraPosition = function() {
+  // Update the mouse position with some lerp
+  this.mouse.position.x += (this.mouse.target.x - this.mouse.position.x) / 30;
+  this.mouse.position.y += (this.mouse.target.y - this.mouse.position.y) / 30;
+
+  // Rotate Z & Y axis
+  this.camera.rotation.z = this.mouse.position.x * 0.2;
+  this.camera.rotation.y = Math.PI - this.mouse.position.x * 0.06;
+  // Move a bit the camera horizontally & vertically
+  this.camera.position.x = this.mouse.position.x * 0.015;
+  this.camera.position.y = -this.mouse.position.y * 0.015;
+};
+
+Tunnel.prototype.updateMaterialOffset = function() {
+  // Update the offset of the material
+  this.tubeMaterial.map.offset.x += this.speed;
+};
+
+Tunnel.prototype.updateCurve = function() {
+  var index = 0, vertice_o = null, vertice = null;
+  // For each vertice of the tube, move it a bit based on the spline
+  for (var i = 0, j = this.tubeGeometry.vertices.length; i < j; i += 1) {
+    // Get the original tube vertice
+    vertice_o = this.tubeGeometry_o.vertices[i];
+    // Get the visible tube vertice
+    vertice = this.tubeGeometry.vertices[i];
+    // Calculate index of the vertice based on the Z axis
+    // The tube is made of 50 rings of vertices
+    index = Math.floor(i / 50);
+    // Update tube vertice
+    vertice.x +=
+      (vertice_o.x + this.splineMesh.geometry.vertices[index].x - vertice.x) /
+      10;
+    vertice.y +=
+      (vertice_o.y + this.splineMesh.geometry.vertices[index].y - vertice.y) /
+      5;
+  }
+  // Warn ThreeJs that the points have changed
+  this.tubeGeometry.verticesNeedUpdate = true;
+
+  // Update the points along the curve base on mouse position
+  this.curve.points[2].x = -this.mouse.position.x * 0.1;
+  this.curve.points[4].x = -this.mouse.position.x * 0.1;
+  this.curve.points[2].y = this.mouse.position.y * 0.1;
+
+  // Warn ThreeJs that the spline has changed
+  this.splineMesh.geometry.verticesNeedUpdate = true;
+  this.splineMesh.geometry.vertices = this.curve.getPoints(70);
+};
+
+var mainimgW=100;
+var counter =1000;
+
+Tunnel.prototype.render = function() {
+   //console.log("calling render counter=" + counter);
+   //mainimg.style.width=  mainimgW + "vw";
+   //mainimg.style.height=mainimgW + "vw";
+   //mainimgW -= (0.001 * mainimgW);
+   //if(mainimgW < 20)mainimgW=200;
+  
+  // Update material offset
+  this.updateMaterialOffset();
+
+  // Update camera position & rotation
+  this.updateCameraPosition();
+
+  // Update the tunnel
+  this.updateCurve();
+
+  // render the scene
+  this.renderer.render(this.scene, this.camera);
+
+   
+  // Animation loop
+  window.requestAnimationFrame(this.render.bind(this));
+};
+
+// All needed textures
+var textures = {
+  "stone": {
+    url: "sunflower.jpeg"
+  },
+  "stoneBump": {
+    url: "sunflower.jpeg"
+  },
+  "t1": {
+    url: "sunflower.jpeg"
+  },
+  "t2": {
+    url: "bluesky.jpeg"
+  },
+  "t3": {
+    url: "roses1.jpeg"
+  },
+  "t4": {
+    url: "roses1.jpeg"
+  }
+};
+// Create a new loader
+var loader = new THREE.TextureLoader();
+
+
+function startanimation()
+{
+ 
+    // Prevent crossorigin issue
+    loader.crossOrigin = "Anonymous";
+    // Load all textures
+    for (var name in textures) {
+      (function(name) {
+      loader.load(textures[name].url, function(texture) {
+        textures[name].texture = texture;
+        checkTextures();
+      });
+    })(name);
+    }
+}
+
+var texturesLoaded = 0;
+function checkTextures() {
+  texturesLoaded++;
+  if (texturesLoaded === Object.keys(textures).length) {
+    document.body.classList.remove("loading");
+    // When all textures are loaded, init the scene
+    window.tunnel = new Tunnel();
+    //setTimeout(function(){ changetunnel(); }, 5000);
+  }
+}
+
+var currtunnel=11;
+
+function changetunnel(p)
+{
+   //if(currtunnel===1)currtunnel=2;
+   //else if(currtunnel===2)currtunnel=3;
+   //else if(currtunnel===3)currtunnel=1;
+    
+    //currtunnel=p;
+    console.log("change tunnel");
+    if(p===4)//camera
+    {
+        snapshot.src=canvas.toDataURL("image/webp");
+        textures.t4.url= snapshot.src;
+    }
+    else
+    {
+       
+    }
+    
+    var url= "./" + currtunnel + ".png";
+    console.log(url);
+    textures.stone.url= url;       //textures["t" + currtunnel].url;
+    textures.stoneBump.url= url;      // textures["t" + currtunnel].url;
+    texturesLoaded=0;
+    loader = new THREE.TextureLoader();
+    // Prevent crossorigin issue
+    loader.crossOrigin = "Anonymous";
+    // Load all textures
+    for (var name in textures) {
+      (function(name) {
+      loader.load(textures[name].url, function(texture) {
+        textures[name].texture = texture;
+        checkTextures();
+      });
+    })(name);
+    }
+    
+    if(currtunnel===5)currtunnel=11;
+    else if(currtunnel===11)currtunnel=12;
+    else if(currtunnel===12)currtunnel=19;
+    else if(currtunnel===19)currtunnel=46;
+    else if(currtunnel===46)currtunnel=38;
+    else if(currtunnel===38)currtunnel=60;
+    else if(currtunnel===60)currtunnel=5;
+    
+    myTimeout = setTimeout(changetunnel, 20000);
+}
+                    
+</script>
+</body>
+</html>
